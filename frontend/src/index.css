@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  --color-primary-950: #1e1b4b;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50;
+  }
+  
+  .glass-button {
+    @apply bg-primary-600/80 hover:bg-primary-500/90 backdrop-blur-md border border-primary-400/30 text-white shadow-lg shadow-primary-600/30 transition-all;
+  }
+
+  .glass-input {
+    @apply bg-slate-950/50 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-primary-500/50 outline-none transition-all placeholder:text-slate-500 text-slate-200 backdrop-blur-md;
+  }
+}
+
+/* Background Animated Gradient Glows */
+body {
+  background-color: #020617; /* slate-950 */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.12), transparent 40%), /* Indigo/Blue glow */
+    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.12), transparent 40%); /* Purple glow */
+  background-attachment: fixed;
+}

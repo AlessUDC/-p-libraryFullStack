@@ -1,0 +1,391 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  LIBRARIAN
+  ADMINISTRATOR
+}
+
+enum LendingType {
+  IN_LIBRARY
+  HOME
+}
+
+enum LendingStatus {
+  IN_PROGRESS
+  RETURNED_LATE
+  LOST
+}
+
+enum RefundStatus {
+  PENDING
+  REFUNDED
+  LOST_DUE_TO_SANCTION
+}
+
+enum ReservationStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+enum FineStatus {
+  PENDING
+  PAID
+  ANNULLED
+}
+
+enum PaymentMethod {
+  BANKING_APP
+  CASH
+}
+
+enum PenaltyType {
+  MILD
+  SEVERE
+  VERY_SEVERE
+}
+
+enum PenaltyStatus {
+  ACTIVE
+  FULFILLED
+  CANCELED
+}
+
+enum CopyStatus {
+  AVAILABLE
+  BORROWED
+  LOST
+}
+
+enum BlockType {
+  TEMPORARY
+  PERMANENT
+}
+
+model UserData {
+  userDataId     String       @id @default(uuid())
+  firstName      String
+  middleName     String?
+  lastName       String
+  documentNumber String       @unique
+  maritalStatus  String?
+  gender         String?
+  isActive       Boolean      @default(true)
+  birthDate      DateTime?
+  mobilePhone    String?
+  landlinePhone  String?
+  email          String?      @unique
+
+  addressId      String?
+  districtId     String?
+
+  address        Address?     @relation(fields: [addressId], references: [addressId])
+  district       District?    @relation(fields: [districtId], references: [districtId])
+  user           User?
+}
+
+model User {
+  userId      String   @id @default(uuid())
+  userDataId  String   @unique
+  role        UserRole
+  code        String   @unique
+  password    String
+
+  userData    UserData @relation(fields: [userDataId], references: [userDataId])
+  student     Student?
+  teacher     Teacher?
+  librarian   Librarian?
+  administrator Administrator?
+
+  reservations Reservation[]
+  borrowedLendings Lending[] @relation("BorrowerLendings")
+  processedLendings Lending[] @relation("ProcessedLendings")
+  fines       Fine[]
+  penalties   Penalty[]
+  blocks      UserBlock[]
+}
+
+model Student {
+  userId                 String  @id
+  cycle                  String
+  schoolId               String
+  onTimeDeliveriesCount  Int     @default(0)
+
+  user   User   @relation(fields: [userId], references: [userId])
+  school School @relation(fields: [schoolId], references: [schoolId])
+}
+
+model Teacher {
+  userId    String @id
+  facultyId String
+
+  user    User    @relation(fields: [userId], references: [userId])
+  faculty Faculty @relation(fields: [facultyId], references: [facultyId])
+}
+
+model Librarian {
+  userId String @id
+  shift  String
+
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model Administrator {
+  userId         String   @id
+  dateAssignment DateTime
+
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model Address {
+  addressId String @id @default(uuid())
+  title     String
+
+  users UserData[]
+}
+
+model District {
+  districtId String @id @default(uuid())
+  title      String
+  provinceId String
+
+  province Province @relation(fields: [provinceId], references: [provinceId])
+  users    UserData[]
+}
+
+model Province {
+  provinceId String @id @default(uuid())
+  title      String
+
+  districts District[]
+}
+
+model School {
+  schoolId  String @id @default(uuid())
+  title     String
+  facultyId String
+
+  faculty Faculty @relation(fields: [facultyId], references: [facultyId])
+  students Student[]
+}
+
+model Faculty {
+  facultyId String @id @default(uuid())
+  title     String
+
+  schools School[]
+  teachers Teacher[]
+}
+
+model Reservation {
+  reservationId   String             @id @default(uuid())
+  userId          String
+  bookId          String
+  reservationDate DateTime
+  dueDate         DateTime
+  status          ReservationStatus
+
+  user User @relation(fields: [userId], references: [userId])
+  book Book @relation(fields: [bookId], references: [bookId])
+
+  @@index([userId])
+  @@index([bookId])
+}
+
+model UserType {
+  userTypeId String   @id @default(uuid())
+  name       UserRole @unique
+
+  lendingPolicies LendingPolicy[]
+}
+
+model LendingPolicy {
+  lendingPolicyId String      @id @default(uuid())
+  userTypeId      String
+  type            LendingType
+  maxDays         Int
+  maxItems        Int
+
+  userType UserType @relation(fields: [userTypeId], references: [userTypeId])
+  lendings  Lending[]
+}
+
+model Lending {
+  lendingId          String          @id @default(uuid())
+  copyId             String
+  librarianUserId    String
+  borrowerUserId     String
+  lendingPolicyId    String
+  status             LendingStatus
+  lendingDate        DateTime
+  expectedReturnDate DateTime
+  actualReturnDate   DateTime?
+  lastUpdated        DateTime        @updatedAt
+  depositAmount      Decimal?
+  refundStatus       RefundStatus?
+  qrToken            String?         @unique
+
+  copy       Copy          @relation(fields: [copyId], references: [copyId])
+  librarian  User          @relation("ProcessedLendings", fields: [librarianUserId], references: [userId])
+  borrower   User          @relation("BorrowerLendings", fields: [borrowerUserId], references: [userId])
+  policy     LendingPolicy @relation(fields: [lendingPolicyId], references: [lendingPolicyId])
+  fine       Fine?
+
+  @@index([copyId])
+  @@index([librarianUserId])
+  @@index([borrowerUserId])
+  @@index([lendingPolicyId])
+}
+
+model Fine {
+  fineId           String        @id @default(uuid())
+  initialAmount    Decimal
+  accumulatedAmount Decimal
+  isTemporary      Boolean       @default(false)
+  userId           String
+  lendingId        String        @unique
+  issueDate        DateTime
+  paymentDate      DateTime?
+  status           FineStatus
+  paymentMethod    PaymentMethod?
+
+  user    User    @relation(fields: [userId], references: [userId])
+  lending Lending @relation(fields: [lendingId], references: [lendingId])
+
+  @@index([userId])
+}
+
+model Penalty {
+  penaltyId       String        @id @default(uuid())
+  userId          String
+  type            PenaltyType
+  daysBlock       Int
+  quantity        Int
+  applicationDate DateTime
+  endDate         DateTime?
+  status          PenaltyStatus
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@index([userId])
+}
+
+model UserBlock {
+  blockId   String    @id @default(uuid())
+  userId    String
+  blockType BlockType
+  startDate DateTime
+  endDate   DateTime?
+  reason    String?
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@index([userId])
+}
+
+model Copy {
+  copyId    String     @id @default(uuid())
+  bookId    String
+  status    CopyStatus
+  location  String
+  barcode   String     @unique
+
+  book Book @relation(fields: [bookId], references: [bookId])
+
+  lendings Lending[]
+
+  @@index([bookId])
+}
+
+model Book {
+  bookId           String  @id @default(uuid())
+  title            String
+  isbn             String  @unique
+  publicationYear  Int
+  edition          String?
+  language         String?
+  pageCount        Int?
+  publisherId      String
+
+  publisher Publisher      @relation(fields: [publisherId], references: [publisherId])
+  copies    Copy[]
+  reservations Reservation[]
+  authors   BookAuthor[]
+  categories BookCategory[]
+  genres    BookGenre[]
+
+  @@index([publisherId])
+}
+
+model Publisher {
+  publisherId String @id @default(uuid())
+  title       String
+
+  books Book[]
+}
+
+model Author {
+  authorId    String @id @default(uuid())
+  firstName   String
+  middleName  String?
+  lastName    String
+  nationality String?
+
+  books BookAuthor[]
+}
+
+model Category {
+  categoryId String @id @default(uuid())
+  title      String
+
+  books BookCategory[]
+}
+
+model Genre {
+  genreId String @id @default(uuid())
+  title   String
+
+  books BookGenre[]
+}
+
+model BookAuthor {
+  authorId String
+  bookId   String
+
+  author Author @relation(fields: [authorId], references: [authorId])
+  book   Book   @relation(fields: [bookId], references: [bookId])
+
+  @@id([authorId, bookId])
+  @@index([bookId])
+}
+
+model BookCategory {
+  categoryId String
+  bookId     String
+
+  category Category @relation(fields: [categoryId], references: [categoryId])
+  book     Book     @relation(fields: [bookId], references: [bookId])
+
+  @@id([categoryId, bookId])
+  @@index([bookId])
+}
+
+model BookGenre {
+  genreId String
+  bookId  String
+
+  genre Genre @relation(fields: [genreId], references: [genreId])
+  book  Book  @relation(fields: [bookId], references: [bookId])
+
+  @@id([genreId, bookId])
+  @@index([bookId])
+}
