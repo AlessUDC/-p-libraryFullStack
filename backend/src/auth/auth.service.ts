@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { randomBytes, randomInt } from 'crypto';
 import { RegisterStudentDto, RegisterTeacherDto, RegisterLibrarianDto } from './dto/register.dto';
@@ -10,7 +10,8 @@ import { RegisterStudentDto, RegisterTeacherDto, RegisterLibrarianDto } from './
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private mailerService: MailerService
+    private mailerService: MailerService,
+    private jwtService: JwtService
   ) {}
 
   async login(code: string, pass: string) {
@@ -45,7 +46,7 @@ export class AuthService {
     };
 
     const payload = { sub: user.userId, code: user.code, role: user.role };
-    const token = jwt.sign(payload, process.env.JWT_SECRET || 'super_secret_jwt_key_1234', { expiresIn: '24h' });
+    const token = this.jwtService.sign(payload);
 
     return { token, user: { userId: user.userId, role: user.role.toLowerCase(), profile } };
   }

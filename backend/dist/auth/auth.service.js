@@ -55,13 +55,14 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = __importStar(require("bcrypt"));
-const jwt = __importStar(require("jsonwebtoken"));
+const jwt_1 = require("@nestjs/jwt");
 const mailer_1 = require("@nestjs-modules/mailer");
 const crypto_1 = require("crypto");
 let AuthService = class AuthService {
-    constructor(prisma, mailerService) {
+    constructor(prisma, mailerService, jwtService) {
         this.prisma = prisma;
         this.mailerService = mailerService;
+        this.jwtService = jwtService;
     }
     login(code, pass) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -96,7 +97,7 @@ let AuthService = class AuthService {
                 email: user.userData.email
             };
             const payload = { sub: user.userId, code: user.code, role: user.role };
-            const token = jwt.sign(payload, process.env.JWT_SECRET || 'super_secret_jwt_key_1234', { expiresIn: '24h' });
+            const token = this.jwtService.sign(payload);
             return { token, user: { userId: user.userId, role: user.role.toLowerCase(), profile } };
         });
     }
@@ -439,5 +440,6 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        mailer_1.MailerService])
+        mailer_1.MailerService,
+        jwt_1.JwtService])
 ], AuthService);
