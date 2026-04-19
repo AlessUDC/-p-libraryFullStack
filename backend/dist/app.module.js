@@ -14,11 +14,39 @@ const students_module_1 = require("./students/students.module");
 const loans_module_1 = require("./loans/loans.module");
 const librarians_module_1 = require("./librarians/librarians.module");
 const auth_module_1 = require("./auth/auth.module");
+const faculties_module_1 = require("./faculties/faculties.module");
+const schools_module_1 = require("./schools/schools.module");
+const locations_module_1 = require("./locations/locations.module");
+const mailer_1 = require("@nestjs-modules/mailer");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, books_module_1.BooksModule, students_module_1.StudentsModule, loans_module_1.LoansModule, librarians_module_1.LibrariansModule, auth_module_1.AuthModule]
+        imports: [
+            prisma_module_1.PrismaModule,
+            books_module_1.BooksModule,
+            students_module_1.StudentsModule,
+            loans_module_1.LoansModule,
+            librarians_module_1.LibrariansModule,
+            auth_module_1.AuthModule,
+            faculties_module_1.FacultiesModule,
+            schools_module_1.SchoolsModule,
+            locations_module_1.LocationsModule,
+            mailer_1.MailerModule.forRoot({
+                transport: {
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: process.env.EMAIL_USER || 'test@gmail.com',
+                        pass: process.env.EMAIL_PASS || 'defaultpass',
+                    },
+                },
+                defaults: {
+                    from: '"Nexus Biblioteca" <noreply@nexus.com>',
+                },
+            }),
+        ]
     })
 ], AppModule);

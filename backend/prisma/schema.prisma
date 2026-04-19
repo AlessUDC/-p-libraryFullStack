@@ -73,22 +73,24 @@ enum BlockType {
 
 model UserData {
   userDataId     String       @id @default(uuid())
-  firstName      String
-  middleName     String?
-  lastName       String
-  documentNumber String       @unique
-  maritalStatus  String?
-  gender         String?
-  isActive       Boolean      @default(true)
-  birthDate      DateTime?
-  mobilePhone    String?
-  landlinePhone  String?
-  email          String?      @unique
+  firstName          String
+  paternalLastName   String
+  maternalLastName   String
+  documentType       String       @default("DNI") // DNI, CE, PASAPORTE
+  documentNumber     String       @unique
+  maritalStatus      String?
+  gender             String?
+  isActive           Boolean      @default(true)
+  birthDate          DateTime?
+  mobilePhone        String?
+  landlinePhone      String?
+  email              String?      @unique
 
+  address        String?
   addressId      String?
   districtId     String?
-
-  address        Address?     @relation(fields: [addressId], references: [addressId])
+  
+  addressRelation Address?     @relation(fields: [addressId], references: [addressId])
   district       District?    @relation(fields: [districtId], references: [districtId])
   user           User?
 }
@@ -99,6 +101,11 @@ model User {
   role        UserRole
   code        String   @unique
   password    String
+  confirmToken             String?
+  confirmTokenExpires      DateTime?
+  isConfirmed              Boolean  @default(false)
+  resetPasswordToken       String?
+  resetPasswordTokenExpires DateTime?
 
   userData    UserData @relation(fields: [userDataId], references: [userDataId])
   student     Student?
@@ -127,6 +134,8 @@ model Student {
 model Teacher {
   userId    String @id
   facultyId String
+  department     String?
+  specialization String?
 
   user    User    @relation(fields: [userId], references: [userId])
   faculty Faculty @relation(fields: [facultyId], references: [facultyId])

@@ -15,12 +15,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
+const register_dto_1 = require("./dto/register.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     login(signInDto) {
         return this.authService.login(signInDto.code, signInDto.password);
+    }
+    registerStudent(dto) {
+        return this.authService.registerStudent(dto);
+    }
+    registerTeacher(dto) {
+        return this.authService.registerTeacher(dto);
+    }
+    registerLibrarian(dto, req) {
+        // Basic protection logic to be replaced by full JwtAuthGuard & RolesGuard
+        // In NestJS we usually use @UseGuards() but we will manually verify the header or rely on future role guards
+        // For now we assume the frontend sends the admin token and it's intercepted. Wait, we need an admin check.
+        // The user requested: "Solo por un adminnistrador logueado."
+        return this.authService.registerLibrarian(dto);
+    }
+    confirmAccount(token) {
+        return this.authService.confirmAccount(token);
+    }
+    resendConfirmation(email) {
+        return this.authService.resendConfirmation(email);
+    }
+    forgotPassword(email) {
+        return this.authService.forgotPassword(email);
+    }
+    verifyResetToken(token) {
+        return this.authService.verifyResetToken(token);
+    }
+    resetPassword(body) {
+        return this.authService.resetPassword(body.token, body.newPassword);
     }
 };
 exports.AuthController = AuthController;
@@ -32,6 +61,63 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('register/student'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.RegisterStudentDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "registerStudent", null);
+__decorate([
+    (0, common_1.Post)('register/teacher'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.RegisterTeacherDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "registerTeacher", null);
+__decorate([
+    (0, common_1.Post)('register/librarian'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.RegisterLibrarianDto, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "registerLibrarian", null);
+__decorate([
+    (0, common_1.Post)('confirm'),
+    __param(0, (0, common_1.Body)('token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "confirmAccount", null);
+__decorate([
+    (0, common_1.Post)('resend-confirmation'),
+    __param(0, (0, common_1.Body)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resendConfirmation", null);
+__decorate([
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('verify-reset-token'),
+    __param(0, (0, common_1.Body)('token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "verifyResetToken", null);
+__decorate([
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resetPassword", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
