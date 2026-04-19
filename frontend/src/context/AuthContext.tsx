@@ -4,8 +4,16 @@ type UserRole = 'student' | 'librarian' | 'administrator' | null;
 
 export interface UserProfile {
     firstName: string;
-    lastName: string;
+    paternalLastName: string;
+    maternalLastName: string;
+    documentType: string;
+    documentNumber: string;
     email: string | null;
+    birthDate?: string | null;
+    mobilePhone?: string | null;
+    landlinePhone?: string | null;
+    address?: string | null;
+    district?: string | null;
 }
 
 export interface User {
@@ -46,8 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const getFullName = () => {
         if (!user) return '';
-        const { firstName, lastName } = user.profile;
-        return `${firstName} ${lastName}`;
+        const { firstName, paternalLastName, maternalLastName } = user.profile;
+        return `${firstName} ${paternalLastName} ${maternalLastName}`;
     };
 
     return (

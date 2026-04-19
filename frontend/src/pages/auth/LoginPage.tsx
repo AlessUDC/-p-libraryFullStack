@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { authService } from '../../services/authService';
+import { loginUser } from '../../api/authApi';
 import { BookOpen, User, Lock, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,7 +19,7 @@ export const LoginPage = () => {
         setLoading(true);
 
         try {
-            const { token, user } = await authService.login(code, password);
+            const { token, user } = await loginUser({ code, password });
             if (token && user) {
                 login(user.userId, user.role, user.profile);
                 if (user.role === 'student') {
@@ -121,8 +121,12 @@ export const LoginPage = () => {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-8 border-t border-slate-800 text-center relative z-10">
-                        <p className="text-slate-500 text-sm font-medium">¿Inconvenientes? Contacta a la administración.</p>
+                    <div className="mt-8 pt-8 border-t border-slate-800 text-center relative z-10 flex flex-col gap-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+                            <button type="button" onClick={() => navigate('/auth/forgot-password')} className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors">¿Olvidaste tu contraseña?</button>
+                            <button type="button" onClick={() => navigate('/auth/register')} className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">Crear una cuenta</button>
+                        </div>
+                        <p className="text-slate-500 text-xs font-medium mt-2">¿Inconvenientes? Contacta a la administración.</p>
                     </div>
                 </div>
             </motion.div>

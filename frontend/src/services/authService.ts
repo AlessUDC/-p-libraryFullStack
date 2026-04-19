@@ -7,8 +7,16 @@ export interface AuthResponse {
         role: 'student' | 'librarian' | 'administrator';
         profile: {
             firstName: string;
-            lastName: string;
+            paternalLastName: string;
+            maternalLastName: string;
+            documentType: string;
+            documentNumber: string;
             email: string | null;
+            birthDate?: string | null;
+            mobilePhone?: string | null;
+            landlinePhone?: string | null;
+            address?: string | null;
+            district?: string | null;
         };
     };
 }

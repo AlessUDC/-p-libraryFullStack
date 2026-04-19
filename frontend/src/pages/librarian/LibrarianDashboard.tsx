@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import {
     Users,
     BookCopy,
+    BookOpen,
     Calendar,
     AlertCircle,
     ArrowUpRight,
@@ -64,10 +65,10 @@ export const LibrarianDashboard = () => {
     }, 0);
 
     const stats = [
-        { label: 'Estudiantes', value: students.length.toString(), icon: Users, color: 'from-blue-600/20 to-blue-400/20', textColor: 'text-blue-400', trend: 'Miembros activos' },
-        { label: 'Préstamos', value: activeLoans.toString(), icon: BookCopy, color: 'from-emerald-600/20 to-emerald-400/20', textColor: 'text-emerald-400', trend: 'En curso' },
-        { label: 'Libros', value: totalBooks.toString(), icon: Calendar, color: 'from-violet-600/20 to-violet-400/20', textColor: 'text-violet-400', trend: 'Títulos registrados' },
-        { label: 'Sanciones', value: totalPenalties.toString(), icon: AlertCircle, color: 'from-amber-600/20 to-amber-400/20', textColor: 'text-amber-400', trend: 'Usuarios bloqueados' },
+        { label: 'Estudiantes', value: students.length.toString(), icon: Users, color: 'from-indigo-600/20 to-indigo-400/10', textColor: 'text-indigo-400', trend: 'Miembros activos' },
+        { label: 'Préstamos', value: activeLoans.toString(), icon: BookCopy, color: 'from-purple-600/20 to-purple-400/10', textColor: 'text-purple-400', trend: 'En curso' },
+        { label: 'Libros', value: totalBooks.toString(), icon: BookOpen, color: 'from-indigo-600/20 to-purple-600/10', textColor: 'text-indigo-300', trend: 'Títulos registrados' },
+        { label: 'Sanciones', value: totalPenalties.toString(), icon: AlertCircle, color: 'from-red-600/20 to-red-400/10', textColor: 'text-red-400', trend: 'Usuarios bloqueados' },
     ];
 
     const recentLoans = loans.slice(-5).reverse();
@@ -85,7 +86,7 @@ export const LibrarianDashboard = () => {
         <div className="space-y-8 animate-in fade-in duration-700">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-slate-400 tracking-tight">Panel de Control</h1>
+                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">Panel de Control</h1>
                     <p className="text-slate-400 font-medium mt-1">Gestión avanzada del ecosistema bibliotecario.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -161,7 +162,7 @@ export const LibrarianDashboard = () => {
                                     <tr key={loan.lendingId} className="hover:bg-white/3 transition-all group">
                                         <td className="px-8 py-6">
                                             <div className="flex flex-col">
-                                                <span className="font-bold text-slate-200">{loan.borrower.userData.firstName} {loan.borrower.userData.lastName}</span>
+                                                <span className="font-bold text-slate-200">{loan.borrower.userData.firstName} {loan.borrower.userData.paternalLastName} {loan.borrower.userData.maternalLastName}</span>
                                                 <span className="text-[10px] text-slate-500 font-bold">{loan.borrower.code}</span>
                                             </div>
                                         </td>

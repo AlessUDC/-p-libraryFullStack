@@ -48,8 +48,8 @@ export const StudentHome = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 className="text-5xl font-black text-white leading-none tracking-tighter mb-4">
-                            ¡Hola, <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-purple-400">{getFullName()}</span>!
+                        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-slate-300 leading-none tracking-tighter mb-4">
+                            ¡Hola, <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300">{getFullName()}</span>!
                         </h1>
                         <p className="text-xl text-slate-400 font-medium">
                             Explora el conocimiento infinito de Nexus. Tu próxima gran aventura literaria está a un clic de distancia.
@@ -141,7 +141,7 @@ export const StudentHome = () => {
                 {/* Main Grid */}
                 <main className="lg:col-span-3">
                     <div className="flex items-center justify-between mb-8 px-2">
-                        <h2 className="text-2xl font-black text-white tracking-tight">Obras Sugeridas</h2>
+                        <h2 className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-slate-400 tracking-tight">Obras Sugeridas</h2>
                         <span className="text-sm font-bold text-slate-500">{filteredBooks.length} resultados encontrados</span>
                     </div>
 

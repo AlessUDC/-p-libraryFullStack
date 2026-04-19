@@ -13,8 +13,9 @@ export interface Student {
         userData: {
             userDataId: string;
             firstName: string;
-            lastName: string;
-            middleName?: string | null;
+            paternalLastName: string;
+            maternalLastName: string;
+            documentType: string;
             documentNumber: string;
             isActive: boolean;
             email?: string | null;

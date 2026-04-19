@@ -33,7 +33,8 @@ export const SanctionsModal: React.FC<SanctionsModalProps> = ({ isOpen, onClose 
     const filteredStudents = students.filter(student =>
         (student.user?.penalties?.filter(p => p.status === 'ACTIVE').length || 0) > 0 && (
             student.user.userData.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            student.user.userData.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            student.user.userData.paternalLastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            student.user.userData.maternalLastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             student.user.userData.documentNumber.includes(searchTerm)
         )
     );
@@ -134,7 +135,7 @@ export const SanctionsModal: React.FC<SanctionsModalProps> = ({ isOpen, onClose 
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-3 mb-2">
                                                             <h3 className="text-lg font-bold text-slate-900">
-                                                                {student.user.userData.firstName} {student.user.userData.lastName} {student.user.userData.middleName || ''}
+                                                                {student.user.userData.firstName} {student.user.userData.paternalLastName} {student.user.userData.maternalLastName}
                                                             </h3>
                                                             <span className={`px-3 py-1 rounded-full text-xs font-bold ${student.user.userData.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
                                                                 }`}>

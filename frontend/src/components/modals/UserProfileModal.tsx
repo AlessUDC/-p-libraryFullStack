@@ -59,86 +59,59 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
 
                             {/* Content */}
                             <div className="p-10 overflow-y-auto flex-1 custom-scrollbar bg-white/1">
-                                {isStudent ? (
-                                    <div className="space-y-10">
-                                        {/* Academic Info */}
-                                        <div className="space-y-5">
-                                            <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] ml-1">Estructura Académica</h3>
-                                            <div className="grid grid-cols-1 gap-4">
-                                                <div className="flex items-center gap-5 p-5 glass-panel bg-white/2 rounded-3xl border-white/5 group hover:bg-white/4 transition-all">
-                                                    <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-                                                        <GraduationCap size={24} />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Escuela / Facultad</p>
-                                                        <p className="text-base font-bold text-slate-100 leading-none">
-                                                            {'school' in profile ? profile.school.title : 'General'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-5 p-5 glass-panel bg-white/2 rounded-3xl border-white/5 group hover:bg-white/4 transition-all">
-                                                    <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-                                                        <Building2 size={24} />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Nivel / Ciclo</p>
-                                                        <p className="text-base font-bold text-slate-100 leading-none uppercase">
-                                                            {'cycle' in profile ? profile.cycle : 'N/A'}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                <div className="space-y-10">
+                                    {/* Personal Identity Info */}
+                                    <div className="space-y-5">
+                                        <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] ml-1">Identidad Ciudadana</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
+                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Documento ({profile.documentType})</p>
+                                                <p className="text-base font-bold text-slate-100">{profile.documentNumber}</p>
                                             </div>
-                                        </div>
-
-                                        {/* Status Info */}
-                                        <div className="grid grid-cols-2 gap-5">
-                                            <div className="p-6 glass-panel bg-white/2 rounded-3xl border-white/5 text-center">
-                                                <div className={`w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center border ${userData?.isActive !== false ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
-                                                    {userData?.isActive !== false ? <CheckCircle size={28} /> : <AlertCircle size={28} />}
-                                                </div>
-                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">Estado Nodo</p>
-                                                <p className={`text-xs font-black uppercase tracking-widest ${userData?.isActive !== false ? 'text-emerald-400' : 'text-red-400'}`}>
-                                                    {userData?.isActive !== false ? 'ACTIVO' : 'SANCIONADO'}
-                                                </p>
-                                            </div>
-                                            <div className="p-6 glass-panel bg-white/2 rounded-3xl border-white/5 text-center">
-                                                <div className="w-14 h-14 mx-auto mb-4 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20 text-indigo-400">
-                                                    <ShieldCheck size={28} />
-                                                </div>
-                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">Puntaje / Logs</p>
-                                                <p className="text-xs font-black text-indigo-400 uppercase tracking-widest">
-                                                    {'onTimeDeliveriesCount' in profile ? profile.onTimeDeliveriesCount : 0} Entregas
-                                                </p>
+                                            <div className="p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
+                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Código Institucional</p>
+                                                <p className="text-base font-bold text-slate-100">{user.id.split('-')[0]}...{user.id.slice(-4)}</p>
                                             </div>
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className="space-y-10">
-                                        <div className="space-y-5">
-                                            <h3 className="text-[10px] font-black text-violet-400 uppercase tracking-[0.2em] ml-1">Perfil Operativo</h3>
-                                            <div className="grid grid-cols-1 gap-4">
-                                                <div className="flex items-center gap-5 p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
-                                                    <div className="w-12 h-12 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 border border-violet-500/20">
-                                                        <Briefcase size={24} />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Rango</p>
-                                                        <p className="text-base font-bold text-slate-100">Administrador de Red</p>
+
+                                    {/* Contact & Personal */}
+                                    <div className="space-y-5">
+                                        <h3 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] ml-1">Contacto y Enlace</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
+                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Móvil</p>
+                                                <p className="text-base font-bold text-slate-100">{profile.mobilePhone || 'No registrado'}</p>
+                                            </div>
+                                            <div className="p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
+                                                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Correo</p>
+                                                <p className="text-sm font-bold text-slate-100 truncate">{profile.email}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {isStudent && (
+                                        <>
+                                            {/* Academic Info */}
+                                            <div className="space-y-5">
+                                                <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] ml-1">Estructura Académica</h3>
+                                                <div className="grid grid-cols-1 gap-4">
+                                                    <div className="flex items-center gap-5 p-5 glass-panel bg-white/2 rounded-3xl border-white/5">
+                                                        <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+                                                            <GraduationCap size={24} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-1.5">Escuela / Facultad</p>
+                                                            <p className="text-base font-bold text-slate-100 italic">
+                                                                {'school' in profile ? profile.school.title : 'General'}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div className="bg-linear-to-br from-violet-600/20 to-indigo-600/10 p-8 rounded-4xl border border-violet-500/20 relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
-                                            <div className="flex items-center gap-4 mb-4">
-                                                <ShieldCheck size={18} className="text-violet-400" />
-                                                <p className="text-[10px] font-black text-violet-400 uppercase tracking-[0.2em]">Hash de Identificación</p>
-                                            </div>
-                                            <p className="text-2xl font-black text-white tracking-widest break-all font-mono opacity-80">{user.id}</p>
-                                        </div>
-                                    </div>
-                                )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </motion.div>
                     </div>

@@ -37,7 +37,7 @@ export const Navbar = () => {
                         <div className="flex items-center gap-4">
                             <div className="text-right">
                                 <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">{user?.role === 'student' ? 'Estudiante' : 'Bibliotecario'}</p>
-                                <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.lastName}</p>
+                                <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName} {user?.profile?.maternalLastName}</p>
                             </div>
                             <button
                                 onClick={() => setIsProfileModalOpen(true)}
@@ -85,7 +85,7 @@ export const Navbar = () => {
                                 <User className="text-indigo-400 w-5 h-5" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.lastName}</p>
+                                <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName} {user?.profile?.maternalLastName}</p>
                                 <p className="text-[10px] text-indigo-400 font-bold uppercase">{user?.role === 'student' ? 'Estudiante' : 'Bibliotecario'}</p>
                             </div>
                         </button>

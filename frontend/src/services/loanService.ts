@@ -14,8 +14,8 @@ export interface Loan {
         code: string;
         userData: {
             firstName: string;
-            lastName: string;
-            middleName?: string | null;
+            paternalLastName: string;
+            maternalLastName: string;
             documentNumber: string;
         };
         student?: {

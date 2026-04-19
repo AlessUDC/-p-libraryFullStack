@@ -5,6 +5,12 @@ import { StudentHome } from './pages/student/StudentHome';
 import { LibrarianLayout } from './layouts/LibrarianLayout';
 import { LibrarianDashboard } from './pages/librarian/LibrarianDashboard';
 import { LoginPage } from './pages/auth/LoginPage';
+import { RegisterPage } from './pages/auth/RegisterPage';
+import { ConfirmAccountPage } from './pages/auth/ConfirmAccountPage';
+import { ResendTokenPage } from './pages/auth/ResendTokenPage';
+import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
+import { VerifyResetTokenPage } from './pages/auth/VerifyResetTokenPage';
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole: 'student' | 'librarian' }) => {
   const { user, isAuthenticated } = useAuth();
@@ -22,6 +28,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path="/auth/confirm" element={<ConfirmAccountPage />} />
+          <Route path="/auth/resend-confirmation" element={<ResendTokenPage />} />
+          <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/auth/verify-reset-token" element={<VerifyResetTokenPage />} />
+          <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+
 
           <Route path="/" element={<Navigate to="/login" replace />} />
 

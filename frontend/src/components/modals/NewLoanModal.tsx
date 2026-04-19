@@ -257,7 +257,7 @@ export const NewLoanModal: React.FC<NewLoanModalProps> = ({ isOpen, onClose, onS
                                                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-400/5 rounded-full blur-2xl -mr-16 -mt-16" />
                                                     <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-2">SOCIO IDENTIFICADO</p>
                                                     <h3 className="text-2xl font-black text-white tracking-tight">
-                                                        {selectedStudent.user.userData.firstName} {selectedStudent.user.userData.lastName}
+                                                        {selectedStudent.user.userData.firstName} {selectedStudent.user.userData.paternalLastName} {selectedStudent.user.userData.maternalLastName}
                                                     </h3>
                                                     <div className="flex items-center gap-3 mt-4">
                                                         <span className="px-3 py-1 bg-white/5 rounded-lg text-[10px] font-black text-slate-400 uppercase tracking-tighter border border-white/5">
@@ -303,7 +303,7 @@ export const NewLoanModal: React.FC<NewLoanModalProps> = ({ isOpen, onClose, onS
                                                         <div className="flex-1">
                                                             <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-1.5">Socio / Borrower</p>
                                                             <p className="text-xl font-black text-white tracking-tight leading-tight">
-                                                                {selectedStudent.user.userData.firstName} {selectedStudent.user.userData.lastName}
+                                                                {selectedStudent.user.userData.firstName} {selectedStudent.user.userData.paternalLastName} {selectedStudent.user.userData.maternalLastName}
                                                             </p>
                                                             <p className="text-[10px] text-slate-500 font-bold uppercase mt-1">CODE: {selectedStudent.user.code}</p>
                                                         </div>
