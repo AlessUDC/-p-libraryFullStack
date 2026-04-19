@@ -153,7 +153,7 @@ export const NewLoanModal: React.FC<NewLoanModalProps> = ({ isOpen, onClose, onS
                             className="glass-panel max-w-2xl w-full max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col pointer-events-auto border-white/10"
                         >
                             {/* Header */}
-                            <div className="bg-linear-to-br from-emerald-600/20 to-emerald-400/10 p-10 relative overflow-hidden shrink-0 border-b border-white/5">
+                            <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-400/10 p-10 relative overflow-hidden shrink-0 border-b border-white/5">
                                 <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] -mr-40 -mt-40" />
                                 <button
                                     onClick={handleClose}

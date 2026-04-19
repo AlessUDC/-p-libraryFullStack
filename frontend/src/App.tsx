@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { StudentLayout } from './layouts/StudentLayout';
 import { StudentHome } from './pages/student/StudentHome';
+import { TeacherHome } from './pages/teacher/TeacherHome';
 import { LibrarianLayout } from './layouts/LibrarianLayout';
 import { LibrarianDashboard } from './pages/librarian/LibrarianDashboard';
 import { LoginPage } from './pages/auth/LoginPage';
@@ -12,12 +13,18 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 import { VerifyResetTokenPage } from './pages/auth/VerifyResetTokenPage';
 
-const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole: 'student' | 'librarian' }) => {
+const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole: 'student' | 'teacher' | 'librarian' }) => {
   const { user, isAuthenticated } = useAuth();
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  
   const isAllowed = user?.role === allowedRole || (allowedRole === 'librarian' && user?.role === 'administrator');
-  if (!isAllowed) return <Navigate to={user?.role === 'student' ? '/student' : '/librarian'} replace />;
+  
+  if (!isAllowed) {
+    if (user?.role === 'student') return <Navigate to="/student" replace />;
+    if (user?.role === 'teacher') return <Navigate to="/teacher" replace />;
+    return <Navigate to="/librarian" replace />;
+  }
 
   return <>{children}</>;
 };
@@ -45,6 +52,15 @@ function App() {
             </ProtectedRoute>
           }>
             <Route index element={<StudentHome />} />
+          </Route>
+
+          {/* Teacher Routes */}
+          <Route path="/teacher" element={
+            <ProtectedRoute allowedRole="teacher">
+              <StudentLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<TeacherHome />} />
           </Route>
 
           {/* Librarian Routes */}

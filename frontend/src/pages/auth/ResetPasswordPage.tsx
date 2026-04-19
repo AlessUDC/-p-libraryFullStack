@@ -71,7 +71,7 @@ export const ResetPasswordPage = () => {
                         <div className="w-16 h-16 bg-indigo-600/20 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(79,70,229,0.3)] border border-indigo-500/30 backdrop-blur-xl">
                             <Lock className="text-indigo-400 w-8 h-8" />
                         </div>
-                        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">Nueva Contraseña</h1>
+                        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">Nueva Contraseña</h1>
                         <p className="text-slate-400 mt-2 font-medium">Crea una nueva contraseña segura para tu cuenta.</p>
                     </div>
 

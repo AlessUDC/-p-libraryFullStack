@@ -10,6 +10,9 @@ import { SchoolsModule } from './schools/schools.module';
 import { LocationsModule } from './locations/locations.module';
 
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CopiesModule } from './copies/copies.module';
+import { CategoriesModule } from './categories/categories.module';
+import { PublishersModule } from './publishers/publishers.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
         from: '"Nexus Biblioteca" <noreply@nexus.com>',
       },
     }),
+    CopiesModule,
+    CategoriesModule,
+    PublishersModule,
   ]
 })
 export class AppModule {}

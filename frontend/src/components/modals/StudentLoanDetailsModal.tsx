@@ -102,7 +102,7 @@ export const StudentLoanDetailsModal: React.FC<StudentLoanDetailsModalProps> = (
                                     {/* Book Information */}
                                     <div className="bg-slate-50 rounded-2xl p-6">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-16 h-16 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shrink-0">
+                                            <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shrink-0">
                                                 <BookOpen className="text-white" size={28} />
                                             </div>
                                             <div className="flex-1">
@@ -155,7 +155,7 @@ export const StudentLoanDetailsModal: React.FC<StudentLoanDetailsModalProps> = (
                                     </div>
 
                                     {/* Student Information */}
-                                    <div className="bg-linear-to-br from-slate-700 to-slate-800 rounded-2xl p-6 text-white">
+                                    <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl p-6 text-white">
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                                                 <User size={24} />
@@ -163,7 +163,7 @@ export const StudentLoanDetailsModal: React.FC<StudentLoanDetailsModalProps> = (
                                             <div>
                                                 <p className="text-xs text-white/70 font-bold uppercase">Estudiante</p>
                                                 <p className="font-black text-lg">
-                                                    {loan.borrower.userData.firstName} {loan.borrower.userData.lastName}
+                                                    {loan.borrower.userData.firstName} {loan.borrower.userData.paternalLastName}
                                                 </p>
                                             </div>
                                         </div>

@@ -435,6 +435,17 @@ let AuthService = class AuthService {
             return { message: 'Contraseña actualizada exitosamente' };
         });
     }
+    verifyPassword(userId, pass) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.prisma.user.findUnique({ where: { userId } });
+            if (!user)
+                throw new common_1.NotFoundException('Usuario no encontrado');
+            const isMatch = yield bcrypt.compare(pass, user.password);
+            if (!isMatch)
+                throw new common_1.UnauthorizedException('Contraseña incorrecta');
+            return { valid: true };
+        });
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

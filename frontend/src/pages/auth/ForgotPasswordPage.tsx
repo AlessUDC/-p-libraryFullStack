@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { forgotPassword } from '../../api/authApi';
 import { Mail, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,7 +39,7 @@ export const ForgotPasswordPage = () => {
                         <div className="w-16 h-16 bg-indigo-600/20 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(79,70,229,0.3)] border border-indigo-500/30 backdrop-blur-xl">
                             <Mail className="text-indigo-400 w-8 h-8" />
                         </div>
-                        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">Recuperar Acceso</h1>
+                        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">Recuperar Acceso</h1>
                         <p className="text-slate-400 mt-2 font-medium">Ingresa tu correo institucional y te enviaremos un enlace para restablecer tu contraseña.</p>
                     </div>
 

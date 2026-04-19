@@ -86,7 +86,7 @@ export const LibrarianRegistrationModal: React.FC<LibrarianRegistrationModalProp
                     >
                         <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-white/20">
                             {/* Header */}
-                            <div className="bg-linear-to-br from-violet-600 to-violet-700 p-8 text-white relative overflow-hidden">
+                            <div className="bg-gradient-to-br from-violet-600 to-violet-700 p-8 text-white relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20" />
                                 <button
                                     onClick={handleClose}

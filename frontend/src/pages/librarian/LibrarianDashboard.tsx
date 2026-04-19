@@ -14,7 +14,6 @@ import {
     Users,
     BookCopy,
     BookOpen,
-    Calendar,
     AlertCircle,
     ArrowUpRight,
     Plus,
@@ -40,17 +39,33 @@ export const LibrarianDashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const [studentsData, loansData, booksData] = await Promise.all([
+                const [studentsRes, loansRes, booksRes] = await Promise.allSettled([
                     studentService.getAll(),
                     loanService.getAll(),
                     bookService.getAll()
                 ]);
-                setStudents(studentsData);
-                setLoans(loansData);
-                setTotalBooks(booksData.length);
+
+                if (studentsRes.status === 'fulfilled') {
+                    setStudents(studentsRes.value);
+                } else {
+                    console.error("Error fetching students:", studentsRes.reason);
+                }
+
+                if (loansRes.status === 'fulfilled') {
+                    setLoans(loansRes.value);
+                } else {
+                    console.error("Error fetching loans:", loansRes.reason);
+                }
+
+                if (booksRes.status === 'fulfilled') {
+                    setTotalBooks(booksRes.value.length);
+                } else {
+                    console.error("Error fetching books:", booksRes.reason);
+                }
             } catch (error) {
-                console.error("Error fetching dashboard data", error);
+                console.error("Error in dashboard fetch:", error);
             } finally {
                 setLoading(false);
             }
@@ -86,7 +101,7 @@ export const LibrarianDashboard = () => {
         <div className="space-y-8 animate-in fade-in duration-700">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">Panel de Control</h1>
+                    <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">Panel de Control</h1>
                     <p className="text-slate-400 font-medium mt-1">Gestión avanzada del ecosistema bibliotecario.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -115,10 +130,10 @@ export const LibrarianDashboard = () => {
                         key={stat.label}
                         className="glass-panel p-6 rounded-4xl hover:border-white/20 transition-all group relative overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-br from-white/5 to-transparent rounded-full -mr-8 -mt-8" />
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-white/5 to-transparent rounded-full -mr-8 -mt-8" />
                         
                         <div className="flex items-start justify-between mb-4">
-                            <div className={`p-3.5 rounded-2xl bg-linear-to-br ${stat.color} ${stat.textColor} border border-white/5 shadow-xl`}>
+                            <div className={`p-3.5 rounded-2xl bg-gradient-to-br ${stat.color} ${stat.textColor} border border-white/5 shadow-xl`}>
                                 <stat.icon size={24} />
                             </div>
                             <div className="text-emerald-400 flex items-center gap-1 text-[10px] font-black bg-emerald-400/10 px-2 py-1 rounded-lg border border-emerald-400/20">
@@ -253,14 +268,6 @@ export const LibrarianDashboard = () => {
                                     <AlertCircle size={18} className="text-indigo-300" />
                                 </div>
                             </button>
-                        </div>
-                    </div>
-
-                    <div className="mt-12 p-6 bg-slate-900/50 rounded-3xl border border-white/5 relative z-10 backdrop-blur-md">
-                        <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-3">Infraestructura Nexus</p>
-                        <div className="flex items-center gap-3">
-                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                            <span className="text-xs font-bold text-slate-300">Base de datos optimizada en tiempo real</span>
                         </div>
                     </div>
                 </div>

@@ -142,7 +142,7 @@ export const StudentRegistrationModal: React.FC<StudentRegistrationModalProps> =
                     >
                         <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                             {/* Header */}
-                            <div className="bg-linear-to-br from-blue-600 to-blue-700 p-8 text-white relative overflow-hidden">
+                            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white relative overflow-hidden">
                                 <button
                                     onClick={handleClose}
                                     className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-xl transition-colors z-10"

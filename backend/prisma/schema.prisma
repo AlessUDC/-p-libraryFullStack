@@ -71,6 +71,11 @@ enum BlockType {
   PERMANENT
 }
 
+enum MovementType {
+  INCREMENT
+  DECREMENT
+}
+
 model UserData {
   userDataId     String       @id @default(uuid())
   firstName          String
@@ -119,6 +124,7 @@ model User {
   fines       Fine[]
   penalties   Penalty[]
   blocks      UserBlock[]
+  stockHistories StockHistory[]
 }
 
 model Student {
@@ -331,6 +337,7 @@ model Book {
   authors   BookAuthor[]
   categories BookCategory[]
   genres    BookGenre[]
+  stockHistories StockHistory[]
 
   @@index([publisherId])
 }
@@ -397,4 +404,20 @@ model BookGenre {
 
   @@id([genreId, bookId])
   @@index([bookId])
+}
+
+model StockHistory {
+  historyId        String       @id @default(uuid())
+  date             DateTime     @default(now())
+  movementType     MovementType
+  previousQuantity Int
+  newQuantity      Int
+  userId           String?
+  bookId           String
+
+  user             User?        @relation(fields: [userId], references: [userId])
+  book             Book         @relation(fields: [bookId], references: [bookId])
+
+  @@index([bookId])
+  @@index([userId])
 }

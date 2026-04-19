@@ -21,9 +21,11 @@ export const LoginPage = () => {
         try {
             const { token, user } = await loginUser({ code, password });
             if (token && user) {
-                login(user.userId, user.role, user.profile);
+                login(token, user.userId, user.role, user.profile);
                 if (user.role === 'student') {
                     navigate('/student');
+                } else if (user.role === 'teacher') {
+                    navigate('/teacher');
                 } else {
                     navigate('/librarian');
                 }
@@ -56,7 +58,7 @@ export const LoginPage = () => {
                         <div className="w-20 h-20 bg-indigo-600/20 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(79,70,229,0.3)] border border-indigo-500/30 backdrop-blur-xl">
                             <BookOpen className="text-indigo-400 w-10 h-10" />
                         </div>
-                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">Nexus</h1>
+                        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">Nexus</h1>
                         <p className="text-slate-400 mt-2 font-medium tracking-wide">Acceso Seguro</p>
                     </div>
 

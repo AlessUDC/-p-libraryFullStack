@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Building2, GraduationCap, AlertCircle, CheckCircle, ShieldCheck, Briefcase } from 'lucide-react';
+import { X, User, GraduationCap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface UserProfileModalProps {
@@ -15,7 +15,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
 
     const isStudent = user.role === 'student';
     const profile = user.profile as any;
-    const userData = (user as any).userData || {};
 
     return (
         <AnimatePresence>
@@ -26,10 +25,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-60"
+                        className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100]"
                     />
 
-                    <div className="fixed inset-0 z-70 flex items-center justify-center p-4 pointer-events-none">
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -37,7 +36,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                             className="glass-panel max-w-lg w-full max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col pointer-events-auto border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                         >
                             {/* Header */}
-                            <div className={`p-10 text-white relative overflow-hidden shrink-0 bg-linear-to-br ${isStudent ? 'from-indigo-600/30 to-purple-600/20' : 'from-violet-600/30 to-fuchsia-600/20'}`}>
+                            <div className={`p-10 text-white relative overflow-hidden shrink-0 bg-gradient-to-br ${isStudent ? 'from-indigo-600/30 to-purple-600/20' : 'from-violet-600/30 to-fuchsia-600/20'}`}>
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px] -mr-20 -mt-20" />
                                 <button
                                     onClick={onClose}

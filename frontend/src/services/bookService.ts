@@ -33,7 +33,7 @@ export const bookService = {
         return response.data;
     },
     update: async (id: string, data: any) => {
-        const response = await api.put<Book>(`/books/${id}`, data);
+        const response = await api.patch<Book>(`/books/${id}`, data);
         return response.data;
     },
     delete: async (id: string) => {
@@ -46,6 +46,10 @@ export const bookService = {
     },
     getStockHistory: async (id: string) => {
         const response = await api.get<any[]>(`/copies/history/${id}`);
+        return response.data;
+    },
+    getBookCopies: async (id: string) => {
+        const response = await api.get<any[]>(`/copies/book/${id}`);
         return response.data;
     }
 };

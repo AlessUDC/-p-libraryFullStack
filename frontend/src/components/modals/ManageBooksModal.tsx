@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Book as BookIcon, Search, Edit2, Trash2, Library, Loader2, AlertCircle, Layers } from 'lucide-react';
 import { bookService } from '../../services/bookService';
+import { authService } from '../../services/authService';
 import type { Book } from '../../services/bookService';
 import { UpdateStockModal } from './UpdateStockModal';
 
@@ -17,6 +18,10 @@ export const ManageBooksModal: React.FC<ManageBooksModalProps> = ({ isOpen, onCl
     const [loading, setLoading] = useState(true);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [selectedBookForStock, setSelectedBookForStock] = useState<Book | null>(null);
+    const [idToDelete, setIdToDelete] = useState<string | null>(null);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [verifyingPassword, setVerifyingPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -36,17 +41,29 @@ export const ManageBooksModal: React.FC<ManageBooksModalProps> = ({ isOpen, onCl
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm('¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.')) return;
+    const handleDeleteClick = (id: string) => {
+        setIdToDelete(id);
+        setPasswordInput('');
+        setPasswordError(false);
+    };
 
-        setDeletingId(id);
+    const confirmDelete = async () => {
+        if (!passwordInput) return;
+        
+        setVerifyingPassword(true);
+        setPasswordError(false);
         try {
-            await bookService.delete(id);
-            setBooks(prev => prev.filter(b => b.bookId !== id));
+            await authService.verifyPassword(passwordInput);
+            
+            setDeletingId(idToDelete);
+            await bookService.delete(idToDelete!);
+            setBooks(prev => prev.filter(b => b.bookId !== idToDelete));
+            setIdToDelete(null);
         } catch (error) {
-            console.error('Error deleting book:', error);
-            alert('Error al eliminar el libro. Asegúrese de que no tenga ejemplares prestados.');
+            console.error('Auth/Delete error:', error);
+            setPasswordError(true);
         } finally {
+            setVerifyingPassword(false);
             setDeletingId(null);
         }
     };
@@ -76,7 +93,7 @@ export const ManageBooksModal: React.FC<ManageBooksModalProps> = ({ isOpen, onCl
                             className="glass-panel max-w-5xl w-full max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col pointer-events-auto border-white/10"
                         >
                             {/* Header */}
-                            <div className="bg-linear-to-br from-amber-600/20 to-amber-400/10 p-10 relative overflow-hidden shrink-0 border-b border-white/5">
+                            <div className="bg-gradient-to-br from-amber-600/20 to-amber-400/10 p-10 relative overflow-hidden shrink-0 border-b border-white/5">
                                 <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] -mr-40 -mt-40" />
                                 <div className="relative z-10 flex items-center gap-8">
                                     <div className="w-16 h-16 bg-amber-600/30 rounded-2xl flex items-center justify-center shrink-0 border border-amber-400/30 shadow-[0_0_25px_rgba(217,119,6,0.2)]">
@@ -159,7 +176,7 @@ export const ManageBooksModal: React.FC<ManageBooksModalProps> = ({ isOpen, onCl
                                                         <Layers size={20} />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(book.bookId)}
+                                                        onClick={() => handleDeleteClick(book.bookId)}
                                                         disabled={deletingId === book.bookId}
                                                         className="p-2.5 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all border border-transparent hover:border-red-400/20"
                                                         title="Eliminar"
@@ -196,6 +213,72 @@ export const ManageBooksModal: React.FC<ManageBooksModalProps> = ({ isOpen, onCl
                     onSuccess={fetchBooks}
                 />
             )}
+
+            {/* Password Verification Prompt */}
+            <AnimatePresence>
+                {idToDelete && (
+                    <>
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150]"
+                            onClick={() => setIdToDelete(null)}
+                        />
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm glass-panel p-8 z-[160] border-red-500/20 shadow-2xl"
+                        >
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                                    <AlertCircle className="text-red-400" size={32} />
+                                </div>
+                                <h3 className="text-xl font-black text-white mb-2">Acción Sensible</h3>
+                                <p className="text-xs text-slate-400 font-medium leading-relaxed italic">
+                                    Por seguridad, ingresa tu contraseña para confirmar la eliminación de la obra.
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <input
+                                    type="password"
+                                    placeholder="Contraseña del Bibliotecario"
+                                    value={passwordInput}
+                                    onChange={(e) => {
+                                        setPasswordInput(e.target.value);
+                                        setPasswordError(false);
+                                    }}
+                                    className={`w-full glass-input px-5 py-3 text-center ${passwordError ? 'border-red-500/50 ring-2 ring-red-500/20' : ''}`}
+                                    autoFocus
+                                    onKeyDown={(e) => e.key === 'Enter' && confirmDelete()}
+                                />
+                                {passwordError && (
+                                    <p className="text-[10px] text-red-400 font-black uppercase text-center tracking-widest animate-pulse">
+                                        Contraseña incorrecta o error de red
+                                    </p>
+                                )}
+                                <div className="grid grid-cols-2 gap-3 mt-6">
+                                    <button
+                                        onClick={() => setIdToDelete(null)}
+                                        className="py-3 px-4 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-black uppercase tracking-widest text-slate-400 transition-all border border-white/5"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={confirmDelete}
+                                        disabled={verifyingPassword || !passwordInput}
+                                        className="py-3 px-4 bg-red-600/80 hover:bg-red-500 border border-red-400/30 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
+                                    >
+                                        {verifyingPassword ? <Loader2 size={14} className="animate-spin" /> : 'Eliminar'}
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </AnimatePresence>
     );
 };

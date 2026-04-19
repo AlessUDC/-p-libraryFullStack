@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-type UserRole = 'student' | 'librarian' | 'administrator' | null;
+type UserRole = 'student' | 'teacher' | 'librarian' | 'administrator' | null;
 
 export interface UserProfile {
     firstName: string;
@@ -24,7 +24,8 @@ export interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (id: string, role: UserRole, profile: UserProfile) => void;
+    token: string | null;
+    login: (token: string, id: string, role: UserRole, profile: UserProfile) => void;
     logout: () => void;
     isAuthenticated: boolean;
     getFullName: () => string;
@@ -38,14 +39,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const login = (id: string, role: UserRole, profile: UserProfile) => {
+    const [token, setToken] = useState<string | null>(() => {
+        return localStorage.getItem('auth_token') || null;
+    });
+
+    const login = (newToken: string, id: string, role: UserRole, profile: UserProfile) => {
         const newUser = { id, role, profile };
         setUser(newUser);
+        setToken(newToken);
         localStorage.setItem('library_user', JSON.stringify(newUser));
+        localStorage.setItem('auth_token', newToken);
     };
 
     const logout = () => {
         setUser(null);
+        setToken(null);
         localStorage.removeItem('library_user');
         localStorage.removeItem('auth_token');
     };
@@ -59,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, getFullName }}>
+        <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated, getFullName }}>
             {children}
         </AuthContext.Provider>
     );

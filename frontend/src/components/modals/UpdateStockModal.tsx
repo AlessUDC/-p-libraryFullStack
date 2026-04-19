@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, History, TrendingUp, TrendingDown, RefreshCcw, Layers } from 'lucide-react';
+import { X, Save, History, TrendingUp, TrendingDown, RefreshCcw, Layers, Barcode, MapPin } from 'lucide-react';
 import { bookService } from '../../services/bookService';
 import type { Book } from '../../services/bookService';
 import { formatDateTime } from '../../utils/dateUtils';
@@ -22,7 +22,7 @@ interface StockHistoryEntry {
 }
 
 export const UpdateStockModal: React.FC<UpdateStockModalProps> = ({ isOpen, onClose, book, onSuccess }) => {
-    const [activeTab, setActiveTab] = useState<'manage' | 'history'>('manage');
+    const [activeTab, setActiveTab] = useState<'manage' | 'history' | 'copies'>('manage');
     const [quantity, setQuantity] = useState<number>(0);
     const [location, setLocation] = useState('Biblioteca Principal');
     const [loading, setLoading] = useState(false);
@@ -88,7 +88,7 @@ export const UpdateStockModal: React.FC<UpdateStockModalProps> = ({ isOpen, onCl
                             className="glass-panel max-w-2xl w-full max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col pointer-events-auto border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                         >
                             {/* Header */}
-                            <div className="bg-linear-to-br from-slate-900 to-slate-800 p-8 border-b border-white/5 relative overflow-hidden">
+                            <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 border-b border-white/5 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -mr-32 -mt-32" />
                                 <div className="relative z-10 flex justify-between items-center">
                                     <div className="flex items-center gap-6">
@@ -121,6 +121,13 @@ export const UpdateStockModal: React.FC<UpdateStockModalProps> = ({ isOpen, onCl
                                 >
                                     LOG DE MOVIMIENTOS
                                     {activeTab === 'history' && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-full" />}
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('copies')}
+                                    className={`flex-1 py-5 text-xs font-black uppercase tracking-widest transition-all relative ${activeTab === 'copies' ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}
+                                >
+                                    EJEMPLARES
+                                    {activeTab === 'copies' && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-full" />}
                                 </button>
                             </div>
 
@@ -206,6 +213,48 @@ export const UpdateStockModal: React.FC<UpdateStockModalProps> = ({ isOpen, onCl
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                ) : activeTab === 'copies' ? (
+                                    <div className="space-y-4">
+                                        {book.copies && book.copies.length > 0 ? (
+                                            book.copies.map((copy) => (
+                                                <div key={copy.copyId} className="glass-panel bg-white/2 p-6 rounded-3xl border-white/5 flex items-center justify-between group hover:bg-white/4 transition-all">
+                                                    <div className="flex items-center gap-5">
+                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center border shadow-xl ${
+                                                            copy.status === 'AVAILABLE' 
+                                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                                                                : copy.status === 'BORROWED' 
+                                                                ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' 
+                                                                : 'bg-red-500/10 text-red-400 border-red-500/20'
+                                                        }`}>
+                                                            <Barcode size={22} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-black text-slate-100 text-base font-mono tracking-wider">
+                                                                {copy.barcode}
+                                                            </p>
+                                                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-1 flex items-center gap-1">
+                                                                <MapPin size={10} /> {copy.location}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <span className={`text-[9px] font-black px-3 py-1.5 rounded-lg border uppercase tracking-widest ${
+                                                        copy.status === 'AVAILABLE' 
+                                                            ? 'bg-emerald-500/5 text-emerald-400 border-emerald-400/20' 
+                                                            : copy.status === 'BORROWED' 
+                                                                ? 'bg-indigo-500/5 text-indigo-400 border-indigo-400/20' 
+                                                                : 'bg-red-500/5 text-red-400 border-red-400/20'
+                                                    }`}>
+                                                        {copy.status}
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center py-32 opacity-30">
+                                                <Barcode size={60} className="text-slate-700 mb-6" />
+                                                <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Sin ejemplares físicos</p>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="space-y-6">

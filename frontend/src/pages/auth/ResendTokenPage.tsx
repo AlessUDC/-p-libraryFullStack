@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { resendConfirmation } from '../../api/authApi';
-import { Mail, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const ResendTokenPage = () => {
-    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'input' | 'loading' | 'success' | 'error'>('input');
     const [message, setMessage] = useState('');

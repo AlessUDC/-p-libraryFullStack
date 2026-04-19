@@ -18,6 +18,9 @@ const faculties_module_1 = require("./faculties/faculties.module");
 const schools_module_1 = require("./schools/schools.module");
 const locations_module_1 = require("./locations/locations.module");
 const mailer_1 = require("@nestjs-modules/mailer");
+const copies_module_1 = require("./copies/copies.module");
+const categories_module_1 = require("./categories/categories.module");
+const publishers_module_1 = require("./publishers/publishers.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,6 +50,9 @@ exports.AppModule = AppModule = __decorate([
                     from: '"Nexus Biblioteca" <noreply@nexus.com>',
                 },
             }),
+            copies_module_1.CopiesModule,
+            categories_module_1.CategoriesModule,
+            publishers_module_1.PublishersModule,
         ]
     })
 ], AppModule);

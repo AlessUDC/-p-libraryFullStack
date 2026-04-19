@@ -108,7 +108,7 @@ export const AllLoansModal: React.FC<AllLoansModalProps> = ({ isOpen, onClose })
     const filteredLoans = loans.filter(loan => {
         const matchesSearch =
             loan.borrower.userData.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            loan.borrower.userData.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            loan.borrower.userData.paternalLastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             loan.copy.book.title.toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesStatus = statusFilter === 'all' || loan.status === statusFilter;
@@ -136,7 +136,7 @@ export const AllLoansModal: React.FC<AllLoansModalProps> = ({ isOpen, onClose })
                     >
                         <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col pointer-events-auto">
                             {/* Header */}
-                            <div className="min-h-40 md:min-h-30 bg-linear-to-br from-violet-600 to-violet-700 p-8 text-white relative overflow-hidden">
+                            <div className="min-h-40 md:min-h-30 bg-gradient-to-br from-violet-600 to-violet-700 p-8 text-white relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20" />
                                 <div className="relative z-10 flex items-center gap-6">
                                     <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 shadow-lg backdrop-blur-md border border-white/20">
@@ -209,7 +209,7 @@ export const AllLoansModal: React.FC<AllLoansModalProps> = ({ isOpen, onClose })
                                                     <tr key={loan.lendingId} className="hover:bg-slate-50 transition-colors">
                                                         <td className="px-6 py-4 text-sm text-slate-500">#{loan.lendingId}</td>
                                                         <td className="px-6 py-4">
-                                                            <p className="text-sm font-bold text-slate-900">{loan.borrower.userData.firstName} {loan.borrower.userData.lastName}</p>
+                                                            <p className="text-sm font-bold text-slate-900">{loan.borrower.userData.firstName} {loan.borrower.userData.paternalLastName}</p>
                                                             <p className="text-xs text-slate-500">{loan.borrower.userData.documentNumber}</p>
                                                         </td>
                                                         <td className="px-6 py-4">

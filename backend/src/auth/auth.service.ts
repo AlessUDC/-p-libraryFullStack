@@ -403,4 +403,14 @@ export class AuthService {
 
     return { message: 'Contraseña actualizada exitosamente' };
   }
+
+  async verifyPassword(userId: string, pass: string) {
+    const user = await this.prisma.user.findUnique({ where: { userId } });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    
+    const isMatch = await bcrypt.compare(pass, user.password);
+    if (!isMatch) throw new UnauthorizedException('Contraseña incorrecta');
+    
+    return { valid: true };
+  }
 }

@@ -32,5 +32,9 @@ export const authService = {
     logout: () => {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('library_user');
+    },
+    verifyPassword: async (password: string) => {
+        const response = await api.post<{ valid: boolean }>('/auth/verify-password', { password });
+        return response.data;
     }
 };

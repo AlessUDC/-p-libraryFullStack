@@ -35,7 +35,7 @@ export const BookDetailsModal: React.FC<BookDetailsModalProps> = ({ book, isOpen
                             className="glass-panel max-w-2xl w-full max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col pointer-events-auto shadow-[0_0_50px_rgba(0,0,0,0.5)] border-white/10"
                         >
                             {/* Header Section */}
-                            <div className="relative p-10 bg-linear-to-br from-indigo-900/50 to-purple-900/50 overflow-hidden">
+                            <div className="relative p-10 bg-gradient-to-br from-indigo-900/50 to-purple-900/50 overflow-hidden">
                                 <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] -mr-40 -mt-40" />
                                 
                                 <button
@@ -122,9 +122,9 @@ export const BookDetailsModal: React.FC<BookDetailsModalProps> = ({ book, isOpen
                                         </h3>
                                         
                                         {book.copies && book.copies.length > 0 ? (
-                                            <div className="space-y-5">
+                                            <div className="space-y-5 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                                 {book.copies.map((copy, idx) => (
-                                                    <div key={copy.copyId} className="flex items-center justify-between group/copy">
+                                                    <div key={copy.copyId} className="flex items-center justify-between group/copy shrink-0">
                                                         <div className="flex flex-col">
                                                             <p className="text-xs font-bold text-slate-200">EJEMPLAR #{idx + 1}</p>
                                                             <p className="text-[10px] text-slate-500 uppercase font-black tracking-tight">{copy.location}</p>

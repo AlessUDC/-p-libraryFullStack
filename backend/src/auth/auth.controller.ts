@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Get, Query, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { RegisterStudentDto, RegisterTeacherDto, RegisterLibrarianDto } from './dto/register.dto';
 
@@ -54,5 +55,12 @@ export class AuthController {
   @Post('reset-password')
   resetPassword(@Body() body: any) {
     return this.authService.resetPassword(body.token, body.newPassword);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('verify-password')
+  @HttpCode(HttpStatus.OK)
+  verifyPassword(@Body('password') password: string, @Request() req: any) {
+    return this.authService.verifyPassword(req.user.sub, password);
   }
 }

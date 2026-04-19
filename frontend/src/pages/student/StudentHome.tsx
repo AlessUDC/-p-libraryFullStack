@@ -23,7 +23,11 @@ export const StudentHome = () => {
     const filteredBooks = useMemo(() => {
         return books.filter(book => {
             const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                 book.isbn.includes(searchTerm);
+                                 book.isbn.includes(searchTerm) ||
+                                 book.authors?.some(a => 
+                                    a.author.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    a.author.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+                                 );
             const matchesCategory = !selectedCategory || 
                                    book.categories?.some(c => c.category.title === selectedCategory);
             return matchesSearch && matchesCategory;
@@ -48,8 +52,8 @@ export const StudentHome = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-slate-300 leading-none tracking-tighter mb-4">
-                            ¡Hola, <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300">{getFullName()}</span>!
+                        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 leading-none tracking-tighter mb-4">
+                            ¡Hola, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300">{getFullName()}</span>!
                         </h1>
                         <p className="text-xl text-slate-400 font-medium">
                             Explora el conocimiento infinito de Nexus. Tu próxima gran aventura literaria está a un clic de distancia.
@@ -113,7 +117,7 @@ export const StudentHome = () => {
                     </div>
 
                     {/* Stats Widget */}
-                    <div className="bg-linear-to-br from-indigo-900/40 to-slate-900/40 backdrop-blur-3xl p-8 rounded-4xl border border-white/5">
+                    <div className="bg-gradient-to-br from-indigo-900/40 to-slate-900/40 backdrop-blur-3xl p-8 rounded-4xl border border-white/5">
                         <p className="text-[10px] text-indigo-400 font-extrabold uppercase tracking-widest mb-4">Tu Actividad</p>
                         <div className="space-y-6">
                             <div className="flex items-center gap-4">
@@ -141,7 +145,7 @@ export const StudentHome = () => {
                 {/* Main Grid */}
                 <main className="lg:col-span-3">
                     <div className="flex items-center justify-between mb-8 px-2">
-                        <h2 className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-slate-400 tracking-tight">Obras Sugeridas</h2>
+                        <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-tight">Obras Sugeridas</h2>
                         <span className="text-sm font-bold text-slate-500">{filteredBooks.length} resultados encontrados</span>
                     </div>
 

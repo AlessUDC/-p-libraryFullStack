@@ -121,7 +121,7 @@ export const ConfirmAccountPage = () => {
                             </motion.div>
                         )}
                         
-                        <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-300 to-purple-300 tracking-tight">
+                        <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">
                             Confirma tu Acceso
                         </h1>
                         <p className="text-slate-400 mt-3 text-sm font-medium">

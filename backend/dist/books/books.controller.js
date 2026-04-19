@@ -15,6 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BooksController = void 0;
 const common_1 = require("@nestjs/common");
 const books_service_1 = require("./books.service");
+const create_book_dto_1 = require("./dto/create-book.dto");
+const update_book_dto_1 = require("./dto/update-book.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const roles_guard_1 = require("../auth/roles.guard");
+const roles_decorator_1 = require("../auth/roles.decorator");
+const client_1 = require("@prisma/client");
 let BooksController = class BooksController {
     constructor(booksService) {
         this.booksService = booksService;
@@ -27,6 +33,15 @@ let BooksController = class BooksController {
     }
     findOne(id) {
         return this.booksService.findOne(id);
+    }
+    create(createBookDto) {
+        return this.booksService.create(createBookDto);
+    }
+    update(id, updateBookDto) {
+        return this.booksService.update(id, updateBookDto);
+    }
+    remove(id) {
+        return this.booksService.remove(id);
     }
 };
 exports.BooksController = BooksController;
@@ -44,6 +59,34 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], BooksController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.LIBRARIAN, client_1.UserRole.ADMINISTRATOR),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_book_dto_1.CreateBookDto]),
+    __metadata("design:returntype", void 0)
+], BooksController.prototype, "create", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.LIBRARIAN, client_1.UserRole.ADMINISTRATOR),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_book_dto_1.UpdateBookDto]),
+    __metadata("design:returntype", void 0)
+], BooksController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(client_1.UserRole.LIBRARIAN, client_1.UserRole.ADMINISTRATOR),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], BooksController.prototype, "remove", null);
 exports.BooksController = BooksController = __decorate([
     (0, common_1.Controller)('books'),
     __metadata("design:paramtypes", [books_service_1.BooksService])

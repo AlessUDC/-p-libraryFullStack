@@ -192,7 +192,7 @@ export const NewBookModal: React.FC<NewBookModalProps> = ({ isOpen, onClose, onS
                     >
                         <div className="glass-panel w-full max-w-2xl rounded-[2.5rem] pointer-events-auto overflow-hidden flex flex-col max-h-[90vh] border-white/10">
                             {/* Header */}
-                            <div className="bg-linear-to-br from-indigo-600/20 to-purple-600/10 p-8 flex items-center justify-between shrink-0 border-b border-white/5">
+                            <div className="bg-gradient-to-br from-indigo-600/20 to-purple-600/10 p-8 flex items-center justify-between shrink-0 border-b border-white/5">
                                 <div className="flex items-center gap-4 text-white">
                                     <div className="p-3 bg-indigo-600/30 rounded-2xl border border-indigo-400/30 shadow-xl shadow-indigo-500/10">
                                         <BookPlus size={28} className="text-indigo-300" />
@@ -334,13 +334,13 @@ export const NewBookModal: React.FC<NewBookModalProps> = ({ isOpen, onClose, onS
                                                             }
                                                             e.target.value = "";
                                                         }}
-                                                        className="w-full glass-input px-5 py-4 text-slate-300"
+                                                        className="w-full glass-input px-5 py-4 text-slate-200 cursor-pointer"
                                                     >
-                                                        <option value="" className="bg-slate-900 uppercase font-black text-[10px]">-- Seleccionar Categoría --</option>
+                                                        <option value="" className="text-slate-500">-- Seleccionar Categoría --</option>
                                                         {categories
                                                             .filter(cat => !selectedCategories.includes(cat.categoryId))
                                                             .map(cat => (
-                                                                <option key={cat.categoryId} value={cat.categoryId} className="bg-slate-900">
+                                                                <option key={cat.categoryId} value={cat.categoryId}>
                                                                     {cat.title}
                                                                 </option>
                                                             ))
