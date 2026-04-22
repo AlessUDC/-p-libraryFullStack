@@ -54,7 +54,23 @@ let CopiesService = class CopiesService {
                         throw new common_1.BadRequestException(`No hay suficientes copias disponibles para remover. Copias disponibles: ${availableCopies.length}`);
                     }
                     const idsToRemove = availableCopies.slice(0, toRemove).map(c => c.copyId);
-                    yield tx.copy.deleteMany({ where: { copyId: { in: idsToRemove } } });
+                    // Handle relations to avoid foreign key violations
+                    if (idsToRemove.length > 0) {
+                        // Delete Fines related to Lendings of these copies
+                        yield tx.fine.deleteMany({
+                            where: { lending: { copyId: { in: idsToRemove } } }
+                        });
+                        // Delete Lendings
+                        yield tx.lending.deleteMany({
+                            where: { copyId: { in: idsToRemove } }
+                        });
+                        // Delete Reservations
+                        yield tx.reservation.deleteMany({
+                            where: { copyId: { in: idsToRemove } }
+                        });
+                        // Finally delete the copies
+                        yield tx.copy.deleteMany({ where: { copyId: { in: idsToRemove } } });
+                    }
                 }
                 yield tx.stockHistory.create({
                     data: {

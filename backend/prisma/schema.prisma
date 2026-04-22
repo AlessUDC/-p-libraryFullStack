@@ -21,19 +21,22 @@ enum LendingType {
 
 enum LendingStatus {
   IN_PROGRESS
+  RETURNED_ON_TIME
   RETURNED_LATE
   LOST
+  OVERDUE
 }
 
 enum RefundStatus {
   PENDING
   REFUNDED
-  LOST_DUE_TO_SANCTION
+  FORFEITED
 }
 
 enum ReservationStatus {
   PENDING
   COMPLETED
+  EXPIRED
   CANCELED
 }
 
@@ -63,6 +66,7 @@ enum PenaltyStatus {
 enum CopyStatus {
   AVAILABLE
   BORROWED
+  RESERVED
   LOST
 }
 
@@ -76,12 +80,19 @@ enum MovementType {
   DECREMENT
 }
 
+model SystemConfig {
+  configId       String  @id @default(uuid())
+  key            String  @unique
+  value          String
+  description    String?
+}
+
 model UserData {
   userDataId     String       @id @default(uuid())
   firstName          String
   paternalLastName   String
   maternalLastName   String
-  documentType       String       @default("DNI") // DNI, CE, PASAPORTE
+  documentType       String       @default("DNI")
   documentNumber     String       @unique
   maritalStatus      String?
   gender             String?
@@ -128,10 +139,12 @@ model User {
 }
 
 model Student {
-  userId                 String  @id
-  cycle                  String
-  schoolId               String
-  onTimeDeliveriesCount  Int     @default(0)
+  userId                  String  @id
+  cycle                   String
+  schoolId                String
+  onTimeDeliveriesCount   Int     @default(0)
+  consecutiveOnTimeReturns Int    @default(0)
+  isAcademicRestricted    Boolean @default(false)
 
   user   User   @relation(fields: [userId], references: [userId])
   school School @relation(fields: [schoolId], references: [schoolId])
@@ -142,6 +155,8 @@ model Teacher {
   facultyId String
   department     String?
   specialization String?
+  consecutiveOnTimeReturns Int @default(0)
+  isAcademicRestricted    Boolean @default(false)
 
   user    User    @relation(fields: [userId], references: [userId])
   faculty Faculty @relation(fields: [facultyId], references: [facultyId])
@@ -204,16 +219,24 @@ model Faculty {
 model Reservation {
   reservationId   String             @id @default(uuid())
   userId          String
+  copyId          String
   bookId          String
-  reservationDate DateTime
-  dueDate         DateTime
-  status          ReservationStatus
+  lendingType     LendingType        @default(IN_LIBRARY)
+  reservationDate DateTime           @default(now())
+  expiresAt       DateTime
+  status          ReservationStatus  @default(PENDING)
+  qrToken         String?            @unique
+  qrImageData     String?            @db.Text
+  requestedReturnDate DateTime?
+  plannedPickupDate   DateTime?
 
   user User @relation(fields: [userId], references: [userId])
   book Book @relation(fields: [bookId], references: [bookId])
+  copy Copy @relation(fields: [copyId], references: [copyId])
 
   @@index([userId])
   @@index([bookId])
+  @@index([copyId])
 }
 
 model UserType {
@@ -235,19 +258,29 @@ model LendingPolicy {
 }
 
 model Lending {
-  lendingId          String          @id @default(uuid())
-  copyId             String
-  librarianUserId    String
-  borrowerUserId     String
-  lendingPolicyId    String
-  status             LendingStatus
-  lendingDate        DateTime
-  expectedReturnDate DateTime
-  actualReturnDate   DateTime?
-  lastUpdated        DateTime        @updatedAt
-  depositAmount      Decimal?
-  refundStatus       RefundStatus?
-  qrToken            String?         @unique
+  lendingId             String          @id @default(uuid())
+  copyId                String
+  librarianUserId       String
+  borrowerUserId        String
+  lendingPolicyId       String
+  lendingType           LendingType     @default(IN_LIBRARY)
+  status                LendingStatus   @default(IN_PROGRESS)
+  lendingDate           DateTime        @default(now())
+  expectedReturnDate    DateTime?
+  actualReturnDate      DateTime?
+  lastUpdated           DateTime        @updatedAt
+  depositAmount         Decimal?
+  refundStatus          RefundStatus?
+  qrToken               String?         @unique
+  qrImageData           String?         @db.Text
+  returnQrToken         String?         @unique
+  returnQrImageData     String?         @db.Text
+  returnQrExpiresAt     DateTime?
+  returnedBookLost      Boolean         @default(false)
+  daysOverdue           Int             @default(0)
+  totalFineAmount       Decimal         @default(0)
+  isQrScannedPickup     Boolean         @default(false)
+  isQrScannedReturn     Boolean         @default(false)
 
   copy       Copy          @relation(fields: [copyId], references: [copyId])
   librarian  User          @relation("ProcessedLendings", fields: [librarianUserId], references: [userId])
@@ -262,16 +295,17 @@ model Lending {
 }
 
 model Fine {
-  fineId           String        @id @default(uuid())
-  initialAmount    Decimal
-  accumulatedAmount Decimal
-  isTemporary      Boolean       @default(false)
-  userId           String
-  lendingId        String        @unique
-  issueDate        DateTime
-  paymentDate      DateTime?
-  status           FineStatus
-  paymentMethod    PaymentMethod?
+  fineId             String         @id @default(uuid())
+  initialAmount      Decimal        @default(0)
+  accumulatedAmount  Decimal        @default(0)
+  isTemporary        Boolean        @default(false)
+  userId             String
+  lendingId          String         @unique
+  issueDate          DateTime       @default(now())
+  expiresAt          DateTime?
+  paymentDate        DateTime?
+  status             FineStatus     @default(PENDING)
+  paymentMethod      PaymentMethod?
 
   user    User    @relation(fields: [userId], references: [userId])
   lending Lending @relation(fields: [lendingId], references: [lendingId])
@@ -282,12 +316,13 @@ model Fine {
 model Penalty {
   penaltyId       String        @id @default(uuid())
   userId          String
+  lendingId       String?
   type            PenaltyType
   daysBlock       Int
-  quantity        Int
-  applicationDate DateTime
+  quantity        Int           @default(1)
+  applicationDate DateTime      @default(now())
   endDate         DateTime?
-  status          PenaltyStatus
+  status          PenaltyStatus @default(ACTIVE)
 
   user User @relation(fields: [userId], references: [userId])
 
@@ -297,8 +332,8 @@ model Penalty {
 model UserBlock {
   blockId   String    @id @default(uuid())
   userId    String
-  blockType BlockType
-  startDate DateTime
+  blockType BlockType @default(TEMPORARY)
+  startDate DateTime  @default(now())
   endDate   DateTime?
   reason    String?
 
@@ -310,13 +345,14 @@ model UserBlock {
 model Copy {
   copyId    String     @id @default(uuid())
   bookId    String
-  status    CopyStatus
+  status    CopyStatus @default(AVAILABLE)
   location  String
   barcode   String     @unique
 
   book Book @relation(fields: [bookId], references: [bookId])
 
-  lendings Lending[]
+  lendings     Lending[]
+  reservations Reservation[]
 
   @@index([bookId])
 }
@@ -329,14 +365,15 @@ model Book {
   edition          String?
   language         String?
   pageCount        Int?
+  price            Decimal @default(0)
   publisherId      String
 
-  publisher Publisher      @relation(fields: [publisherId], references: [publisherId])
-  copies    Copy[]
+  publisher    Publisher      @relation(fields: [publisherId], references: [publisherId])
+  copies       Copy[]
   reservations Reservation[]
-  authors   BookAuthor[]
-  categories BookCategory[]
-  genres    BookGenre[]
+  authors      BookAuthor[]
+  categories   BookCategory[]
+  genres       BookGenre[]
   stockHistories StockHistory[]
 
   @@index([publisherId])

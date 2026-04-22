@@ -61,6 +61,6 @@ export class AuthController {
   @Post('verify-password')
   @HttpCode(HttpStatus.OK)
   verifyPassword(@Body('password') password: string, @Request() req: any) {
-    return this.authService.verifyPassword(req.user.sub, password);
+    return this.authService.verifyPassword(req.user.userId, password);
   }
 }

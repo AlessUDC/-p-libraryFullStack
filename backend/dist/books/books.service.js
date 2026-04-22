@@ -83,6 +83,7 @@ let BooksService = class BooksService {
     create(data) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.prisma.$transaction((tx) => __awaiter(this, void 0, void 0, function* () {
+                var _a;
                 let publisher = yield tx.publisher.findFirst({ where: { title: data.publisherTitle } });
                 if (!publisher) {
                     publisher = yield tx.publisher.create({ data: { title: data.publisherTitle } });
@@ -107,6 +108,7 @@ let BooksService = class BooksService {
                         edition: data.edition,
                         language: data.language,
                         pageCount: data.pageCount,
+                        price: (_a = data.price) !== null && _a !== void 0 ? _a : 0,
                         publisherId: publisher.publisherId,
                         authors: {
                             create: authorIds.map(id => ({ authorId: id })),
@@ -147,6 +149,7 @@ let BooksService = class BooksService {
                     edition: data.edition,
                     language: data.language,
                     pageCount: data.pageCount,
+                    price: data.price,
                 };
                 if (data.publisherTitle) {
                     let publisher = yield tx.publisher.findFirst({ where: { title: data.publisherTitle } });
@@ -196,14 +199,18 @@ let BooksService = class BooksService {
                 }
                 const copiesIds = (yield tx.copy.findMany({ select: { copyId: true }, where: { bookId: id } })).map(c => c.copyId);
                 if (copiesIds.length > 0) {
+                    // Delete fines BEFORE lendings (Fine has FK to Lending)
+                    yield tx.fine.deleteMany({ where: { lending: { copyId: { in: copiesIds } } } });
+                    // Delete lendings BEFORE copies (Lending has FK to Copy)
                     yield tx.lending.deleteMany({ where: { copyId: { in: copiesIds } } });
                 }
+                // Delete reservations BEFORE copies (Reservation has FK to Copy)
+                yield tx.reservation.deleteMany({ where: { bookId: id } });
                 yield tx.copy.deleteMany({ where: { bookId: id } });
                 yield tx.stockHistory.deleteMany({ where: { bookId: id } });
                 yield tx.bookAuthor.deleteMany({ where: { bookId: id } });
                 yield tx.bookCategory.deleteMany({ where: { bookId: id } });
                 yield tx.bookGenre.deleteMany({ where: { bookId: id } });
-                yield tx.reservation.deleteMany({ where: { bookId: id } });
                 return tx.book.delete({ where: { bookId: id } });
             }));
         });

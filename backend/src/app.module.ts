@@ -1,26 +1,20 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './prisma/prisma.module';
-import { BooksModule } from './books/books.module';
 import { StudentsModule } from './students/students.module';
-import { LoansModule } from './loans/loans.module';
 import { LibrariansModule } from './librarians/librarians.module';
 import { AuthModule } from './auth/auth.module';
 import { FacultiesModule } from './faculties/faculties.module';
 import { SchoolsModule } from './schools/schools.module';
 import { LocationsModule } from './locations/locations.module';
-
 import { MailerModule } from '@nestjs-modules/mailer';
-import { CopiesModule } from './copies/copies.module';
-import { CategoriesModule } from './categories/categories.module';
-import { PublishersModule } from './publishers/publishers.module';
 
 @Module({
   imports: [
-    PrismaModule, 
-    BooksModule, 
-    StudentsModule, 
-    LoansModule, 
-    LibrariansModule, 
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    StudentsModule,
+    LibrariansModule,
     AuthModule,
     FacultiesModule,
     SchoolsModule,
@@ -36,12 +30,9 @@ import { PublishersModule } from './publishers/publishers.module';
         },
       },
       defaults: {
-        from: '"Nexus Biblioteca" <noreply@nexus.com>',
+        from: '"Nexus Platform" <noreply@nexus.com>',
       },
     }),
-    CopiesModule,
-    CategoriesModule,
-    PublishersModule,
-  ]
+  ],
 })
 export class AppModule {}

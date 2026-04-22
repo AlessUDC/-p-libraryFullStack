@@ -32,7 +32,6 @@ let StudentsService = class StudentsService {
                     user: {
                         include: {
                             userData: true,
-                            penalties: true,
                         }
                     },
                     school: {

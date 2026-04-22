@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { BookOpen, LogOut, User, Menu, X } from 'lucide-react';
+import { useAuth, type UserRole } from '../../context/AuthContext';
+import { Shield, LogOut, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { UserProfileModal } from '../modals/UserProfileModal';
 
@@ -15,6 +15,16 @@ export const Navbar = () => {
         navigate('/login');
     };
 
+    const getRoleLabel = (role: UserRole) => {
+        switch (role) {
+            case 'student': return 'Estudiante';
+            case 'teacher': return 'Docente';
+            case 'librarian': return 'Administrador';
+            case 'administrator': return 'Super Admin';
+            default: return 'Usuario';
+        }
+    };
+
     return (
         <>
             <nav className="sticky top-0 z-50 glass-panel border-x-0 border-t-0 rounded-none shadow-none backdrop-blur-2xl bg-slate-900/60">
@@ -23,22 +33,20 @@ export const Navbar = () => {
                         {/* Logo */}
                         <Link to="/" className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-indigo-600/30 rounded-xl flex items-center justify-center border border-indigo-400/30 shadow-[0_0_15px_rgba(79,70,229,0.3)]">
-                                <BookOpen className="text-indigo-300 w-5 h-5" />
+                                <Shield className="text-indigo-300 w-5 h-5" />
                             </div>
                             <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 hidden sm:block tracking-tight">Nexus</span>
                         </Link>
 
                         {/* Desktop Menu */}
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to={user?.role === 'student' ? '/student' : '/librarian'} className="text-slate-300 hover:text-indigo-400 font-semibold tracking-wide transition-colors">Panel Principal</Link>
-                            {user?.role === 'student' && (
-                                <Link to="/student" className="text-slate-300 hover:text-indigo-400 font-semibold tracking-wide transition-colors">Catálogo Cósmico</Link>
-                            )}
+                            <Link to={user?.role === 'student' ? '/student' : (user?.role === 'teacher' ? '/teacher' : '/librarian')} className="text-slate-300 hover:text-indigo-400 font-semibold tracking-wide transition-colors">Panel Principal</Link>
+                            
                             <div className="h-8 w-px bg-slate-700 mx-2" />
                             <div className="flex items-center gap-4">
                                 <div className="text-right">
-                                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">{user?.role === 'student' ? 'Estudiante' : 'Bibliotecario'}</p>
-                                    <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName} {user?.profile?.maternalLastName}</p>
+                                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">{getRoleLabel(user?.role ?? null)}</p>
+                                    <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName}</p>
                                 </div>
                                 <button
                                     onClick={() => setIsProfileModalOpen(true)}
@@ -70,10 +78,8 @@ export const Navbar = () => {
                 {/* Mobile Menu */}
                 {isMenuOpen && (
                     <div className="md:hidden bg-slate-900/95 backdrop-blur-3xl border-t border-slate-800 p-4 space-y-4 shadow-2xl absolute w-full left-0">
-                        <Link to={user?.role === 'student' ? '/student' : '/librarian'} className="block px-4 py-3 text-slate-200 font-bold hover:bg-white/5 rounded-xl">Panel Principal</Link>
-                        {user?.role === 'student' && (
-                            <Link to="/student" className="block px-4 py-3 text-slate-200 font-bold hover:bg-white/5 rounded-xl">Catálogo Cósmico</Link>
-                        )}
+                        <Link to={user?.role === 'student' ? '/student' : (user?.role === 'teacher' ? '/teacher' : '/librarian')} className="block px-4 py-3 text-slate-200 font-bold hover:bg-white/5 rounded-xl">Panel Principal</Link>
+                        
                         <div className="border-t border-slate-800 pt-4 flex items-center justify-between mt-4">
                             <button
                                 onClick={() => {
@@ -86,8 +92,8 @@ export const Navbar = () => {
                                     <User className="text-indigo-400 w-5 h-5" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName} {user?.profile?.maternalLastName}</p>
-                                    <p className="text-[10px] text-indigo-400 font-bold uppercase">{user?.role === 'student' ? 'Estudiante' : 'Bibliotecario'}</p>
+                                    <p className="text-sm font-bold text-slate-100">{user?.profile?.firstName} {user?.profile?.paternalLastName}</p>
+                                    <p className="text-[10px] text-indigo-400 font-bold uppercase">{getRoleLabel(user?.role ?? null)}</p>
                                 </div>
                             </button>
                             <button
@@ -102,7 +108,6 @@ export const Navbar = () => {
                 )}
             </nav>
 
-            {/* User Profile Modal moved outside nav to prevent fixed inset-0 issue with backdrop-blur */}
             <UserProfileModal
                 isOpen={isProfileModalOpen}
                 onClose={() => setIsProfileModalOpen(false)}

@@ -29,51 +29,54 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, 
   return <>{children}</>;
 };
 
+import { SocketProvider } from './context/SocketContext';
+
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/auth/register" element={<RegisterPage />} />
-          <Route path="/auth/confirm" element={<ConfirmAccountPage />} />
-          <Route path="/auth/resend-confirmation" element={<ResendTokenPage />} />
-          <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/auth/verify-reset-token" element={<VerifyResetTokenPage />} />
-          <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+    <SocketProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/register" element={<RegisterPage />} />
+            <Route path="/auth/confirm" element={<ConfirmAccountPage />} />
+            <Route path="/auth/resend-confirmation" element={<ResendTokenPage />} />
+            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/auth/verify-reset-token" element={<VerifyResetTokenPage />} />
+            <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Student Routes */}
+            <Route path="/student" element={
+              <ProtectedRoute allowedRole="student">
+                <StudentLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<StudentHome />} />
+            </Route>
 
-          {/* Student Routes */}
-          <Route path="/student" element={
-            <ProtectedRoute allowedRole="student">
-              <StudentLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<StudentHome />} />
-          </Route>
+            {/* Teacher Routes */}
+            <Route path="/teacher" element={
+              <ProtectedRoute allowedRole="teacher">
+                <StudentLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<TeacherHome />} />
+            </Route>
 
-          {/* Teacher Routes */}
-          <Route path="/teacher" element={
-            <ProtectedRoute allowedRole="teacher">
-              <StudentLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<TeacherHome />} />
-          </Route>
-
-          {/* Librarian Routes */}
-          <Route path="/librarian" element={
-            <ProtectedRoute allowedRole="librarian">
-              <LibrarianLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<LibrarianDashboard />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            {/* Librarian Routes */}
+            <Route path="/librarian" element={
+              <ProtectedRoute allowedRole="librarian">
+                <LibrarianLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<LibrarianDashboard />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </SocketProvider>
   )
 }
 

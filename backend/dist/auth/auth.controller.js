@@ -53,7 +53,7 @@ let AuthController = class AuthController {
         return this.authService.resetPassword(body.token, body.newPassword);
     }
     verifyPassword(password, req) {
-        return this.authService.verifyPassword(req.user.sub, password);
+        return this.authService.verifyPassword(req.user.userId, password);
     }
 };
 exports.AuthController = AuthController;

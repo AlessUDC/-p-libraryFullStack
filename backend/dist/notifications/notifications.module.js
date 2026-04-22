@@ -6,19 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoansModule = void 0;
+exports.NotificationsModule = void 0;
 const common_1 = require("@nestjs/common");
-const loans_controller_1 = require("./loans.controller");
-const loans_service_1 = require("./loans.service");
-const notifications_module_1 = require("../notifications/notifications.module");
-let LoansModule = class LoansModule {
+const notifications_service_1 = require("./notifications.service");
+const library_gateway_1 = require("./library.gateway");
+let NotificationsModule = class NotificationsModule {
 };
-exports.LoansModule = LoansModule;
-exports.LoansModule = LoansModule = __decorate([
+exports.NotificationsModule = NotificationsModule;
+exports.NotificationsModule = NotificationsModule = __decorate([
     (0, common_1.Module)({
-        imports: [notifications_module_1.NotificationsModule],
-        controllers: [loans_controller_1.LoansController],
-        providers: [loans_service_1.LoansService],
-        exports: [loans_service_1.LoansService],
+        providers: [notifications_service_1.NotificationsService, library_gateway_1.LibraryGateway],
+        exports: [notifications_service_1.NotificationsService, library_gateway_1.LibraryGateway],
     })
-], LoansModule);
+], NotificationsModule);
